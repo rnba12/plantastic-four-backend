@@ -5,7 +5,7 @@ from flask_login import UserMixin
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64))
-    name = db.Column(db.String(64))
+    email = db.Column(db.String(64))
     password_hash = db.Column(db.String(128))
     plants = db.relationship('Plant', backref='owner', lazy='dynamic')
 
@@ -18,7 +18,8 @@ class User(UserMixin, db.Model):
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))        
+    return User.query.get(int(id))   
+         
 
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +28,8 @@ class Plant(db.Model):
     water_freq = db.Column(db.Integer)
     purchase_date = db.Column(db.DateTime)
     plant_data_id = db.Column(db.Integer)
+    
+
 
 class Plant_Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,3 +44,4 @@ class Plant_Data(db.Model):
     origin = db.Column(db.String(100))
     climate = db.Column(db.String(100))
     soil = db.Column(db.String(100))
+    plants = db.relationship('Plant', backref='data', lazy='dynamic')
