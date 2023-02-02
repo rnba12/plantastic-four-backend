@@ -29,8 +29,6 @@ class Plant(db.Model):
     purchase_date = db.Column(db.DateTime)
     plant_data_id = db.Column(db.Integer)
     
-
-
 class Plant_Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100))

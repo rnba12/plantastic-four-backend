@@ -63,6 +63,7 @@ def refresh_expiring_jwts(response):
 def get_all_users():
     return user_controller.index
 
+
 @app.route('/users/<int:id>')
 def get_user():
     return user_controller.show
@@ -71,12 +72,12 @@ def get_user():
 def user_plants():
     return 
 
-@app.route('/users/<int:id>/plants/<int:plant_id>', method=['GET', 'PUT', 'DELETE'])
+@app.route('/users/<int:id>/plants/<int:plant_id>', methods=['GET', 'PUT', 'DELETE'])
 def plant_handler():
     fns = {
-        'GET':,
-        'PUT':,
-        'DELETE':
+        # 'GET':,
+        # 'PUT':,
+        # 'DELETE':
     }
      
 
