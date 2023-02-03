@@ -11,6 +11,7 @@ flask-migrate = "*"
 flask-login = "*"
 flask-jwt-extended = "*"
 psycopg2 = "*"
+jsonpickle = "*"
 
 [dev-packages]
 
