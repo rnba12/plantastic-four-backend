@@ -29,14 +29,16 @@ class Plant(db.Model):
     purchase_date = db.Column(db.DateTime)
     plant_data_id = db.Column(db.Integer)
     
+    
 class Plant_Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100))
-    name = db.Column(db.String(100))
+    names = db.Column(db.String(100))
     latin_name = db.Column(db.String(100))
     min_temp = db.Column(db.Integer)
     max_temp = db.Column(db.Integer)
     ideal_light = db.Column(db.String(100))
+    tolerated_light = db.Column(db.String(100))
     pests = db.Column(db.String(100))
     watering = db.Column(db.String(100))
     origin = db.Column(db.String(100))

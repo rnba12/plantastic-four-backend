@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 jwt = JWTManager(app)
 
-from controllers import user_controller
+from controllers import user_controller, plant_controller
 
 
 @app.route("/")
@@ -69,16 +69,17 @@ def get_user():
     return user_controller.show
 
 @app.route('/users/<int:id>/plants', methods=['GET','POST'])
-def user_plants():
-    return 
+def user_plants(id):
+    resp, code = plant_controller.index(request, id)
+    return jsonify(resp)
 
 @app.route('/users/<int:id>/plants/<int:plant_id>', methods=['GET', 'PUT', 'DELETE'])
 def plant_handler():
     fns = {
-        # 'GET':,
-        # 'PUT':,
-        # 'DELETE':
-    }
+        'GET':plant_controller.show,
+        'PUT': plant_controller.update,
+        'DELETE': plant_controller
+    } 
      
 
 if __name__ == "__main__":
