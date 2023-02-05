@@ -132,20 +132,20 @@ def get_plant(plant_id):
     return (resp), code
 
 
-@app.route('/predict', methods=['GET', 'POST'])
-def predict():
-    if request.method == 'POST':
-        try:
-            file = request.files['file']
-            img = file.read()
-            prediction = predict_image(img)
-            print(prediction)
-            res = Markup(utils.disease_dic[prediction])
-            print(res)
-            return res, 200
-        except:
-            pass
-    return "Nothing Posted so nothing to get | Internal Server Error", 500
+# @app.route('/predict', methods=['GET', 'POST'])
+# def predict():
+#     if request.method == 'POST':
+#         try:
+#             file = request.files['file']
+#             img = file.read()
+#             prediction = predict_image(img)
+#             print(prediction)
+#             res = Markup(utils.disease_dic[prediction])
+#             print(res)
+#             return res, 200
+#         except:
+#             pass
+#     return "Nothing Posted so nothing to get | Internal Server Error", 500
 
 # @app.route('/upload', methods=['POST'])
 # def fileUpload():
@@ -182,17 +182,35 @@ def predict():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def fileUpload():
-    logger.info("welcome to trying to upload my plant image`")
-    msg = "nothing uploaded"
+
     file = request.files['file']
     img = file.read()
     prediction = predict_image(img)
-    print(prediction)
+    #print(prediction)
     res = Markup(utils.disease_dic[prediction])
     print(res)
-    response = jsonify(res)
-    return response, 200
+    result = jsonify(res)
+    print(result)
+    return result, 200
 
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    logger.info("welcome to trying to upload my plant image`")
+    msg = "nothing uploaded"
+    if request.method == 'POST':
+        try:
+            file = request.files['file']
+            img = file.read()
+            prediction = predict_image(img)
+            print(prediction)
+            result = Markup(utils.disease_dic[prediction])
+            print(result)
+            result2 = jsonify(result)
+            print(result2)
+            return result2, 200
+        except:
+            pass
+    return jsonify({"message": "Internal server problem"}), 500
 
 @app.errorhandler(exceptions.NotFound)
 def handle_404(err):
