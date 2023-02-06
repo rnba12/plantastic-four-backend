@@ -41,20 +41,22 @@ def home():
 @app.route("/register", methods=['POST'])
 def register():
     user_controller.create(request)
-    return jsonify({"message": "User Created"})
+    return jsonify({"message": "User Created"}), 201
 
-# Handle logging in 
+# Handle logging in
+
+
 @app.route("/login", methods=["POST"])
 def create_token():
     username = request.get_json()['username']
     password = request.get_json()['password']
-    user = User.query.filter_by(username = username).first_or_404()
+    user = User.query.filter_by(username=username).first_or_404()
     print(user.check_password(password))
-    if not user.check_password(password): # Need to compare these to database
+    if not user.check_password(password):  # Need to compare these to database
         return {"message": "Invalid credentials"}, 401
     access_token = create_access_token(identity=username)
-    response = {"access_token": access_token}  
-    return response
+    response = {"access_token": access_token}
+    return response, 201
 
 
 @app.route("/logout")
@@ -74,7 +76,7 @@ def refresh_expiring_jwts(response):
             access_token = create_access_token(identity=get_jwt_identity())
             data = response.get_json()
             if type(data) is dict:
-                data["access_token"] = access_token 
+                data["access_token"] = access_token
                 response.data = json.dumps(data)
         return response
     except (RuntimeError, KeyError):
@@ -90,14 +92,14 @@ def get_user(username):
     return user_controller.show(request, username)
 
 
-@app.route('/users/<username>/plants', methods=['GET','POST'])
+@app.route('/users/<username>/plants', methods=['GET', 'POST'])
 @jwt_required()
 def user_plants(username):
     if get_jwt_identity() != username:
         return jsonify({"message": "Thats not you"}), 401
     fns = {
-        'GET': user_plant_controller.index ,
-        'POST' : user_plant_controller.create
+        'GET': user_plant_controller.index,
+        'POST': user_plant_controller.create
     }
     resp, code = fns[request.method](request, username)
     return jsonify(resp), code
@@ -109,7 +111,7 @@ def plant_handler(username, plant_id):
     if get_jwt_identity() != username:
         return jsonify({"message": "Thats not you"}), 401
     fns = {
-        'GET':user_plant_controller.show,
+        'GET': user_plant_controller.show,
         'PUT': user_plant_controller.update,
         'DELETE': user_plant_controller.destroy
     }
@@ -123,7 +125,6 @@ def all_plants():
     resp, code = plant_controller.index(request)
     print(resp)
     return (resp), code
-    
 
 @app.route("/plants/<int:plant_id>")
 @jwt_required()
@@ -225,6 +226,7 @@ def handle_400(err):
 @app.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
     return {'message': f"It's not you, it's us"}, 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
