@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import json
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Markup, session
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -9,6 +9,12 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from werkzeug import exceptions
 from config import Config
 
+
+import os
+from werkzeug.utils import secure_filename
+import logging
+
+import utils
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(Config)
@@ -16,6 +22,12 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 jwt = JWTManager(app)
+app.config['UPLOAD_FOLDER'] = './TestSrc/uploads'
+from model import predict_image
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('I am a plant')
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 from controllers import user_controller, user_plant_controller, plant_controller
 from models import User
@@ -114,13 +126,92 @@ def all_plants():
     print(resp)
     return (resp), code
 
-
 @app.route("/plants/<int:plant_id>")
 @jwt_required()
 def get_plant(plant_id):
     resp, code = plant_controller.show(request, plant_id)
     return (resp), code
 
+
+# @app.route('/predict', methods=['GET', 'POST'])
+# def predict():
+#     if request.method == 'POST':
+#         try:
+#             file = request.files['file']
+#             img = file.read()
+#             prediction = predict_image(img)
+#             print(prediction)
+#             res = Markup(utils.disease_dic[prediction])
+#             print(res)
+#             return res, 200
+#         except:
+#             pass
+#     return "Nothing Posted so nothing to get | Internal Server Error", 500
+
+# @app.route('/upload', methods=['POST'])
+# def fileUpload():
+#     target = os.path.join(app.config['UPLOAD_FOLDER'], 'test')
+#     if not os.path.isdir(target):
+#         os.mkdir(target)
+#     logger.info("welcome to trying to upload my plant image`")
+#     file = request.files['file']
+#     #filename = secure_filename(file.filename)
+#     #destination = "/".join([target, filename])
+#     #file.save(destination)
+#     #session['uploadFilePath'] = destination
+#     img = file.read()
+#     prediction = predict_image(img)
+#     print(prediction)
+#     res = Markup(utils.disease_dic[prediction])
+#     response = jsonify(res)
+#     return response, 200
+
+# @app.route('/upload', methods=['GET', 'POST'])
+# def fileUpload():
+#     logger.info("welcome to trying to upload my plant image`")
+#     msg = "nothing uploaded"
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         img = file.read()
+#         prediction = predict_image(img)
+#         print(prediction)
+#         res = Markup(utils.disease_dic[prediction])
+#         print(res)
+#         response = jsonify(res)
+#         return response, 200
+#     return msg, 400
+
+@app.route('/upload', methods=['GET', 'POST'])
+def fileUpload():
+
+    file = request.files['file']
+    img = file.read()
+    prediction = predict_image(img)
+    #print(prediction)
+    res = Markup(utils.disease_dic[prediction])
+    print(res)
+    result = jsonify(res)
+    print(result)
+    return result, 200
+
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    logger.info("welcome to trying to upload my plant image`")
+    msg = "nothing uploaded"
+    if request.method == 'POST':
+        try:
+            file = request.files['file']
+            img = file.read()
+            prediction = predict_image(img)
+            print(prediction)
+            result = Markup(utils.disease_dic[prediction])
+            print(result)
+            result2 = jsonify(result)
+            print(result2)
+            return result2, 200
+        except:
+            pass
+    return jsonify({"message": "Internal server problem"}), 500
 
 @app.errorhandler(exceptions.NotFound)
 def handle_404(err):

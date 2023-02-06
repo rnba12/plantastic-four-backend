@@ -12,6 +12,10 @@ flask-login = "*"
 flask-jwt-extended = "*"
 psycopg2 = "*"
 jsonpickle = "*"
+numpy = "*"
+pillow = "*"
+torch = "*"
+torchvision = "*"
 
 [dev-packages]
 pytest = "*"
