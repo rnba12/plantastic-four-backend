@@ -126,6 +126,7 @@ def all_plants():
     print(resp)
     return (resp), code
 
+
 @app.route("/plants/<int:plant_id>")
 @jwt_required()
 def get_plant(plant_id):
@@ -187,12 +188,13 @@ def fileUpload():
     file = request.files['file']
     img = file.read()
     prediction = predict_image(img)
-    #print(prediction)
+    # print(prediction)
     res = Markup(utils.disease_dic[prediction])
     print(res)
     result = jsonify(res)
     print(result)
     return result, 200
+
 
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
@@ -212,6 +214,7 @@ def predict():
         except:
             pass
     return jsonify({"message": "Internal server problem"}), 500
+
 
 @app.errorhandler(exceptions.NotFound)
 def handle_404(err):
