@@ -44,8 +44,10 @@ def update(req, username, plant_id):
     user = User.query.filter_by(username = username).first_or_404()
     plant_to_edit = user.plants[plant_id]
     data = req.get_json()
-    plant_to_edit.nickname = data["nickname"]
-    plant_to_edit.water_freq = data["water_freq"]
+    if data.get('nickname') != None:    
+        plant_to_edit.nickname = data["nickname"]
+    if data.get('water_freq') != None:
+        plant_to_edit.water_freq = data["water_freq"]
     # plant_to_edit.purchase_date = data["purchase_date"]
     db.session.commit()
     return plant_to_edit.as_dict(), 200

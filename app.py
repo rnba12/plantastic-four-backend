@@ -84,12 +84,17 @@ def refresh_expiring_jwts(response):
         return response
 
 
-@app.route('/users/<username>')
+@app.route('/users/<username>', methods=['PUT', 'DELETE'])
 @jwt_required()
 def get_user(username):
     if get_jwt_identity() != username:
         return jsonify({"message": "Thats not you"}), 401
-    return user_controller.show(request, username)
+    fns = {
+        'PUT': user_controller.update,
+        'DELETE': user_controller.destroy
+    }
+    resp, code = fns[request.method](request, username)
+    return jsonify(resp), code
 
 
 @app.route('/users/<username>/plants', methods=['GET', 'POST'])

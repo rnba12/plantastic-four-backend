@@ -32,6 +32,7 @@ class Plant(db.Model):
     purchase_date = db.Column(db.DateTime)
     plant_data_id = db.Column(db.Integer, db.ForeignKey('plant__data.id'))
 
+
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     
