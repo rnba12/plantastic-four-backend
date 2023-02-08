@@ -16,6 +16,9 @@ numpy = "*"
 pillow = "*"
 torch = "*"
 torchvision = "*"
+flask-mail = "*"
+schedule = "*"
+apscheduler = "*"
 
 [dev-packages]
 pytest = "*"

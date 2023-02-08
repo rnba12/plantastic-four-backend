@@ -2,6 +2,7 @@ from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64))
@@ -16,13 +17,13 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))   
-         
+    return User.query.get(int(id))
+
 
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,13 +31,15 @@ class Plant(db.Model):
     nickname = db.Column(db.String(64))
     water_freq = db.Column(db.Integer)
     purchase_date = db.Column(db.Date)
+    plant_img = db.Column(db.String(1000000))
     last_watered = db.Column(db.Date)
     avatar = db.Column(db.String(64))
     plant_data_id = db.Column(db.Integer, db.ForeignKey('plant__data.id'))
 
     def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-    
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 class Plant_Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100))
@@ -54,4 +57,4 @@ class Plant_Data(db.Model):
     plants = db.relationship('Plant', backref='data', lazy='dynamic')
 
     def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
