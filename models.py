@@ -29,9 +29,10 @@ class Plant(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     nickname = db.Column(db.String(64))
     water_freq = db.Column(db.Integer)
-    purchase_date = db.Column(db.DateTime)
+    purchase_date = db.Column(db.Date)
+    last_watered = db.Column(db.Date)
+    avatar = db.Column(db.String(64))
     plant_data_id = db.Column(db.Integer, db.ForeignKey('plant__data.id'))
-
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

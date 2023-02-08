@@ -128,7 +128,6 @@ def plant_handler(username, plant_id):
 @jwt_required()
 def all_plants():
     resp, code = plant_controller.index(request)
-    print(resp)
     return (resp), code
 
 

@@ -31,7 +31,9 @@ def create(req, username):
         nickname=data['nickname'],
         water_freq=data['water_freq'],
         purchase_date=data['purchase_date'],
+        last_watered=data['purchase_date'],
         plant_data_id=data['plant_data_id'],
+        avatar=data['avatar'],
         owner=user
     )
     db.session.add(plant)
@@ -58,6 +60,9 @@ def update(req, username, plant_id):
         plant_to_edit.nickname = data["nickname"]
     if data.get('water_freq') != None:
         plant_to_edit.water_freq = data["water_freq"]
-    # plant_to_edit.purchase_date = data["purchase_date"]
+    if data.get('purchase_date') != None:
+        plant_to_edit.purchase_date = data["purchase_date"]
+    if data.get('last_watered') != None:
+        plant_to_edit.last_Watered = data["last_watered"]
     db.session.commit()
     return plant_to_edit.as_dict(), 200
