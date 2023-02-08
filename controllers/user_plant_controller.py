@@ -11,7 +11,7 @@ def index(req, username):
     for plant in all_plants:
         return_list.append(
             {"plant": plant.as_dict(), "data": plant.data.as_dict()})
-    return return_list, 200
+    return sorted(return_list, key=lambda p: p['plant']['id']), 200
 
 # Get data for one plant
 
@@ -34,6 +34,7 @@ def create(req, username):
         last_watered=data['purchase_date'],
         plant_data_id=data['plant_data_id'],
         avatar=data['avatar'],
+        plant_img=data['plant_img'],
         owner=user
     )
     db.session.add(plant)
@@ -63,6 +64,8 @@ def update(req, username, plant_id):
     if data.get('purchase_date') != None:
         plant_to_edit.purchase_date = data["purchase_date"]
     if data.get('last_watered') != None:
-        plant_to_edit.last_Watered = data["last_watered"]
+        plant_to_edit.last_watered = data["last_watered"]
+    if data.get('plant_img') != None:
+        plant_to_edit.plant_img = data['plant_img']
     db.session.commit()
     return plant_to_edit.as_dict(), 200

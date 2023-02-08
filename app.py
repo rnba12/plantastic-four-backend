@@ -1,4 +1,7 @@
-from datetime import datetime, timedelta, timezone
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
+
+from datetime import datetime, timedelta, timezone, date
 import json
 from flask import Flask, jsonify, request, Markup, session
 from flask_cors import CORS
@@ -16,7 +19,15 @@ import logging
 
 import utils
 app = Flask(__name__)
+app.app_context().push()
+
+from flask_mail import Message
+from mailers import mail_config
+mail = mail_config(app)
+
 CORS(app)
+
+
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -30,7 +41,7 @@ logger = logging.getLogger('I am a plant')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 from controllers import user_controller, user_plant_controller, plant_controller
-from models import User
+from models import User, Plant
 
 
 @app.route("/")
@@ -234,6 +245,36 @@ def handle_400(err):
 def handle_500(err):
     return {'message': f"It's not you, it's us"}, 500
 
+
+def send_email(email, plant_name, water_freq):
+    msg = Message('Plant watering reminder',
+                  sender='your_email@gmail.com', recipients=[email])
+    msg.body = f"It's been {water_freq} days since you last watered {plant_name}. Please water it today."
+    mail.send(msg)
+
+
+def check_watering():
+    app.app_context().push()
+    plant_data = Plant.query.all()
+    for plant in plant_data:
+        email = plant.owner.email
+        plant_name = plant.nickname
+        last_watered_date = plant.last_watered
+        water_freq = plant.water_freq
+
+        print(email, plant_name, last_watered_date, water_freq)
+        print(last_watered_date, date.today())
+        diff = date.today() - last_watered_date
+        print(diff)
+        if diff.days >= water_freq:
+            send_email(email, plant_name, water_freq)
+
+
+# check_watering()
+
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(check_watering, 'interval', days=1)
+sched.start()
 
 if __name__ == "__main__":
     app.run(debug=True)
