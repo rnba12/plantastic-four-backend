@@ -3,7 +3,7 @@ import time
 
 from datetime import datetime, timedelta, timezone, date
 import json
-from flask import Flask, jsonify, request, Markup, session
+from flask import Flask, jsonify, request, Markup, session, render_template
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -246,10 +246,12 @@ def handle_500(err):
     return {'message': f"It's not you, it's us"}, 500
 
 
-def send_email(email, plant_name, water_freq):
-    msg = Message('Plant watering reminder',
+def send_email(email, plant_name, water_freq, username):
+    msg = Message('Plant Watering Reminder',
                   sender='your_email@gmail.com', recipients=[email])
-    msg.body = f"It's been {water_freq} days since you last watered {plant_name}. Please water it today."
+    # msg.body = f"It's been {water_freq} days since you last watered {plant_name}. Please water it today."
+    msg.html = render_template(
+        "email.html", plant_name=plant_name, water_freq=water_freq, username=username)
     mail.send(msg)
 
 
@@ -257,20 +259,18 @@ def check_watering():
     app.app_context().push()
     plant_data = Plant.query.all()
     for plant in plant_data:
+        username = plant.owner.username
         email = plant.owner.email
         plant_name = plant.nickname
         last_watered_date = plant.last_watered
         water_freq = plant.water_freq
 
-        print(email, plant_name, last_watered_date, water_freq)
-        print(last_watered_date, date.today())
         diff = date.today() - last_watered_date
-        print(diff)
         if diff.days >= water_freq:
-            send_email(email, plant_name, water_freq)
+            send_email(email, plant_name, water_freq, username)
 
 
-# check_watering()
+check_watering()
 
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(check_watering, 'interval', days=1)
