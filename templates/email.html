@@ -3,38 +3,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Uh oh, your plant needs watering</title>
+    <title>Uh Oh, Your Plant Needs Watering!</title>
   </head>
-  <body>
-    <main width="80%" style="margin: 0 auto">
-      <nav width="100%"></nav>
-      <h1 style="color: rgb(233, 56, 28); font-family: 'Arial', sans-serif">
-        Hello, {{username}}!
-      </h1>
-      <strong style="color: grey; font-family: sans-serif"
-        >Its been over {{water_freq}} days since you last watered
-        {{plant_name}}</strong
-      >
-      <img
-        width="100%"
-        style="margin: 10px auto"
-        src="https://cdn.pixabay.com/photo/2018/05/10/17/48/lego-3388163__480.png"
-        alt="LegOh"
-      />
 
-      <a
-        href="http://localhost:5173/"
-        width="50%"
-        style="
-          padding: 10px;
-          color: rgb(229, 103, 98);
-          text-decoration: none;
-          background-color: rgb(228, 233, 197);
-          font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-        "
-      >
-        Take me there!
-      </a>
+  <body>
+
+   <main>
+
+        <nav>
+            <img src="https://main--fanciful-tarsier-29e66b.netlify.app/assets/logo-573e5d83.png" alt="logo">
+        </nav>
+        
+        <div>
+            <h1>Your Plant Needs Watering!</h1>
+            <br>
+        
+            <p>{{username}}, its been more than {{water_freq}} days since you watered {{plant_name}}.
+                <br><br><br>Give them a drink and keep them updated on
+            <a href="http://localhost:5173">House Your Plant!</a>
+            </p>
+
+            
+        </div>
+    <footer>
+                @Copyright 2023 House your Plant || 123 Primrose Hill, London, P1 4NT
+            </footer>
     </main>
   </body>
+  <style>
+    body {
+        background-color: #c6ecae; 
+        font-family: 'Arial', 'sans-serif'; 
+        margin: 0;
+        height: 100vh;
+    }
+    main {
+        display: flex; 
+        flex-direction:column; 
+        align-items:center;
+        height: 100%;
+    }
+    nav {
+        display: flex; 
+        align-items:center; 
+        justify-content:center; 
+        background-color: rgb(255, 243, 218); 
+        width: 100%;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px #2c030341
+    }
+    p {
+        font-size: 20px;  
+        font-weight:700
+    }
+    img {width: 10%;}
+
+    div {
+        text-align: center;
+        background-color: #619469;
+        color: #fef9e8;
+        padding: 30px;
+        height: 80%;
+        width: 70%;
+        border-radius: 50px;
+    }
+    a {
+        text-decoration: underline;
+        font-size: 22px;
+        color: #fef9e8;
+    }
+    footer {
+        color: #619469;
+        padding: 15px 0;
+        font-weight: 600;
+        position: fixed;
+        bottom: 0;
+        display: flex; 
+        align-items:center; 
+        justify-content:center; 
+        background-color: rgb(255, 243, 218); 
+        width: 100%;
+    }
+  </style>
 </html>

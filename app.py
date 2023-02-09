@@ -247,7 +247,7 @@ def handle_500(err):
 
 
 def send_email(email, plant_name, water_freq, username):
-    msg = Message('Plant watering reminder',
+    msg = Message('Plant Watering Reminder',
                   sender='your_email@gmail.com', recipients=[email])
     # msg.body = f"It's been {water_freq} days since you last watered {plant_name}. Please water it today."
     msg.html = render_template(
